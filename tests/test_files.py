@@ -34,9 +34,14 @@ async def test_read_file_not_found(temp_dir: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_read_file_security_violation() -> None:
-    # Attempt path traversal outside allowed temp dir
+    import sys
+
+    # Attempt path traversal outside allowed temp dir (cross-platform)
+    forbidden_path = (
+        "C:/Windows/System32/drivers/etc/hosts" if sys.platform == "win32" else "/etc/shadow"
+    )
     with pytest.raises(SecurityError, match="Access denied"):
-        await read_file("C:/Windows/System32/drivers/etc/hosts")
+        await read_file(forbidden_path)
 
 
 @pytest.mark.asyncio
