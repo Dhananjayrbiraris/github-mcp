@@ -68,9 +68,7 @@ async def search_repos(
         # 2. Global search API if search_term provided and limit not reached
         if search_term and len(repos_dict) < limit:
             try:
-                paginated_results = client.search_repositories(
-                    query=search_term, sort=sort_param
-                )
+                paginated_results = client.search_repositories(query=search_term, sort=sort_param)
                 r: Any
                 for r in paginated_results[:limit]:
                     if r.full_name not in repos_dict:

@@ -43,8 +43,7 @@ app = MCPServer(
 @app.tool(
     name="search_repos",
     description=(
-        "Search GitHub repositories matching query, optional language filter, "
-        "and sort order."
+        "Search GitHub repositories matching query, optional language filter, and sort order."
     ),
 )
 async def tool_search_repos(
@@ -70,8 +69,7 @@ async def tool_inspect_pr(repo: str, pr_number: int) -> dict[str, Any]:
 @app.tool(
     name="inspect_issue",
     description=(
-        "Fetch issue details including assignees, state, labels, linked PRs, "
-        "and recent comments."
+        "Fetch issue details including assignees, state, labels, linked PRs, and recent comments."
     ),
 )
 async def tool_inspect_issue(repo: str, issue_number: int) -> dict[str, Any]:
@@ -96,8 +94,7 @@ async def tool_search_code(
 @app.tool(
     name="recent_commits",
     description=(
-        "Fetch recent commits for a repository branch within lookback days "
-        "with commit stats."
+        "Fetch recent commits for a repository branch within lookback days with commit stats."
     ),
 )
 async def tool_recent_commits(
