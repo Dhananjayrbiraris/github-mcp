@@ -16,7 +16,7 @@ We will investigate and respond to security advisories promptly.
 
 ---
 
-## 🔒 Security Best Practices for Users
+## Security Best Practices for Users
 - **Never commit `.env` files** containing your GitHub personal access tokens.
 - Restrict `ALLOWED_PATHS` in `config.py` / `.env` to trusted directories to ensure local filesystem operations remain safely sandboxed.
 - Regularly rotate your GitHub Personal Access Tokens.

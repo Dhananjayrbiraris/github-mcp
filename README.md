@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🐙 GithubMCP
+# GithubMCP
 
 **A Production-Grade Personal Developer Assistant MCP Server**
 
@@ -17,7 +17,7 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **GithubMCP** is a Model Context Protocol (MCP) server designed for developers. It bridges AI assistants directly with your development environment, enabling them to:
 - Inspect GitHub repositories, pull requests, issues, commits, and code across public and private repositories.
@@ -30,7 +30,7 @@ Supports both **STDIO** (Claude Desktop, Cursor) and **SSE** (Server-Sent Events
 
 ---
 
-## 🛠️ Tool Suite Reference
+## Tool Suite Reference
 
 GithubMCP provides **13 specialized tools**:
 
@@ -52,7 +52,7 @@ GithubMCP provides **13 specialized tools**:
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 - **Python 3.11+**
@@ -105,7 +105,7 @@ TRANSPORT=stdio
 
 ---
 
-## 🤖 Client Setup Guides
+## Client Setup Guides
 
 ### A. Claude Desktop
 
@@ -142,7 +142,7 @@ TRANSPORT=stdio
 *(On Windows, use backslashes e.g. `C:\\Users\\yourname\\path\\to\\github-mcp` or forward slashes).*
 
 #### 3. Restart Claude Desktop
-Open Claude Desktop — click the **🔨 Hammer / Tools icon** at the bottom right of the prompt box to view all connected GithubMCP tools.
+Open Claude Desktop — click the Tools icon at the bottom right of the prompt box to view all connected GithubMCP tools.
 
 ---
 
@@ -168,7 +168,7 @@ SSE endpoint will be available at: `http://localhost:8000/sse`
 
 ---
 
-## 🔒 Security & Sandboxing
+## Security & Sandboxing
 
 1. **Path Sandboxing:** Local filesystem tools (`read_file`, `list_directory`, `search_local_files`, `get_project_context`) strictly enforce path traversal validation against `ALLOWED_PATHS`. Accessing paths outside the allowlist will raise a `SecurityError`.
 2. **Secret Management:** Tokens and credentials are never logged or exposed.
@@ -176,7 +176,7 @@ SSE endpoint will be available at: `http://localhost:8000/sse`
 
 ---
 
-## 🧪 Development & Testing
+## Development & Testing
 
 Run the full testing and quality check suite:
 
@@ -196,7 +196,7 @@ uv run mypy src/
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 github-mcp/
@@ -227,12 +227,12 @@ github-mcp/
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE) — free for personal and commercial use.
 
 ---
 
 <div align="center">
-Built with ❤️ using the <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> and <a href="https://github.com/astral-sh/uv">UV</a>.
+Built using the <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> and <a href="https://github.com/astral-sh/uv">UV</a>.
 </div>

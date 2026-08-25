@@ -4,7 +4,7 @@ Thank you for your interest in contributing to **GithubMCP**! We welcome bug rep
 
 ---
 
-## 🛠️ Development Setup
+## Development Setup
 
 ### 1. Prerequisites
 - Python 3.11+
@@ -27,7 +27,7 @@ cp .env.example .env
 
 ---
 
-## 🧪 Testing and Quality Checks
+## Testing and Quality Checks
 
 Before submitting a Pull Request, ensure that all quality gates pass:
 
@@ -47,7 +47,7 @@ uv run mypy src/
 
 ---
 
-## 🚀 Pull Request Guidelines
+## Pull Request Guidelines
 
 1. Fork the repository and create a new feature branch:
    ```bash
@@ -60,5 +60,5 @@ uv run mypy src/
 
 ---
 
-## 📄 License
+## License
 By contributing to GithubMCP, you agree that your contributions will be licensed under the [MIT License](LICENSE).
