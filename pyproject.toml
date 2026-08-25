@@ -1,0 +1,76 @@
+[project]
+name = "github-mcp"
+version = "0.1.0"
+description = "Personal Developer MCP Server for GitHub workflows, repository visibility controls, local filesystem context, CI/CD, and code analysis."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Dhananjay Biraris" }
+]
+requires-python = ">=3.11"
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "github",
+    "developer-tools",
+    "ai",
+    "claude",
+    "cursor"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Build Tools",
+]
+dependencies = [
+    "mcp>=1.2.0",
+    "pygithub>=2.1.1",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "pydantic-settings>=2.2.0",
+    "aiohttp>=3.9.0",
+    "rich>=13.7.0",
+]
+
+[project.scripts]
+github-mcp = "github_mcp.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Dhananjayrbiraris/github-mcp"
+Repository = "https://github.com/Dhananjayrbiraris/github-mcp"
+Issues = "https://github.com/Dhananjayrbiraris/github-mcp/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.3.0",
+    "mypy>=1.8.0",
+    "httpx>=0.27.0",
+    "types-pyyaml>=6.0.12",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
