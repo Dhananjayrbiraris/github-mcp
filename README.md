@@ -32,12 +32,16 @@ Supports both **STDIO** (Claude Desktop, Cursor) and **SSE** (Server-Sent Events
 
 ## Tool Suite Reference
 
-GithubMCP provides **13 specialized tools**:
+GithubMCP provides **17 specialized tools**:
 
 | Category | Tool Name | Description |
 | :--- | :--- | :--- |
 | **GitHub** | `search_repos` | Search public & private user/org repositories with language & sort filters. |
 | **GitHub** | `inspect_pr` | Fetch PR details, changed files, addition/deletion stats, and review comments. |
+| **GitHub** | `create_pull_request` | Open a new pull request from head branch into base branch. |
+| **GitHub** | `create_branch` | Create a new git branch in a repository off of an existing branch. |
+| **GitHub** | `create_or_update_file` | Create or update and commit a file directly on a GitHub branch. |
+| **GitHub** | `create_issue` | Open a new GitHub issue with title, body, labels, and assignees. |
 | **GitHub** | `inspect_issue` | Inspect issue state, assignees, linked PRs, labels, and recent comments. |
 | **GitHub** | `search_code` | Search code patterns across repositories with extension filters. |
 | **GitHub** | `recent_commits` | Fetch recent commit history with diff statistics and authors. |

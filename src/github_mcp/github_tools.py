@@ -361,3 +361,215 @@ async def update_repo_visibility(
         }
 
     return await run_async_github_call(_sync_edit)
+
+
+async def create_pull_request(
+    repo: str,
+    title: str,
+    head: str,
+    base: str = "main",
+    body: str = "",
+    draft: bool = False,
+    github_client: Github | None = None,
+) -> dict[str, Any]:
+    """Create a new pull request in a repository.
+
+    Args:
+        repo: Repository name in 'owner/repo' format (or just repository name).
+        title: Title of the pull request.
+        head: The name of the branch where your changes are implemented.
+        base: The name of the branch you want to merge changes into (default: 'main').
+        body: The contents/description of the pull request.
+        draft: Whether to create the pull request as a draft (default: False).
+        github_client: Optional pre-configured PyGithub instance.
+    """
+    client = github_client or get_github_client()
+
+    def _sync_create_pr() -> dict[str, Any]:
+        full_repo_name = repo
+        if "/" not in full_repo_name:
+            user = client.get_user()
+            full_repo_name = f"{user.login}/{repo}"
+
+        gh_repo = client.get_repo(full_repo_name)
+        pr = gh_repo.create_pull(
+            title=title,
+            body=body,
+            base=base,
+            head=head,
+            draft=draft,
+        )
+
+        return {
+            "status": "success",
+            "number": pr.number,
+            "title": pr.title,
+            "url": pr.html_url,
+            "head": head,
+            "base": base,
+            "draft": pr.draft,
+            "state": pr.state,
+            "message": f"Successfully created PR #{pr.number}: '{pr.title}' in {full_repo_name}.",
+        }
+
+    return await run_async_github_call(_sync_create_pr)
+
+
+async def create_branch(
+    repo: str,
+    branch: str,
+    from_branch: str = "main",
+    github_client: Github | None = None,
+) -> dict[str, Any]:
+    """Create a new git branch in a repository.
+
+    Args:
+        repo: Repository name in 'owner/repo' format (or just repository name).
+        branch: Name of the new branch to create.
+        from_branch: Base branch or ref to branch off of (default: 'main').
+        github_client: Optional pre-configured PyGithub instance.
+    """
+    client = github_client or get_github_client()
+
+    def _sync_create_branch() -> dict[str, Any]:
+        full_repo_name = repo
+        if "/" not in full_repo_name:
+            user = client.get_user()
+            full_repo_name = f"{user.login}/{repo}"
+
+        gh_repo = client.get_repo(full_repo_name)
+        base_ref = gh_repo.get_branch(from_branch)
+        new_ref = gh_repo.create_git_ref(ref=f"refs/heads/{branch}", sha=base_ref.commit.sha)
+
+        return {
+            "status": "success",
+            "repo": full_repo_name,
+            "branch": branch,
+            "from_branch": from_branch,
+            "sha": new_ref.object.sha,
+            "message": (
+                f"Successfully created branch '{branch}' from '{from_branch}' in {full_repo_name}."
+            ),
+        }
+
+    return await run_async_github_call(_sync_create_branch)
+
+
+async def create_or_update_file(
+    repo: str,
+    path: str,
+    content: str,
+    message: str,
+    branch: str = "main",
+    github_client: Github | None = None,
+) -> dict[str, Any]:
+    """Create or commit updates to a file in a repository on GitHub.
+
+    Args:
+        repo: Repository name in 'owner/repo' format (or just repository name).
+        path: File path in the repository (e.g. 'src/app.py', 'README.md').
+        content: The text content to write into the file.
+        message: Git commit message.
+        branch: The branch to commit to (default: 'main').
+        github_client: Optional pre-configured PyGithub instance.
+    """
+    client = github_client or get_github_client()
+
+    def _sync_commit_file() -> dict[str, Any]:
+        full_repo_name = repo
+        if "/" not in full_repo_name:
+            user = client.get_user()
+            full_repo_name = f"{user.login}/{repo}"
+
+        gh_repo = client.get_repo(full_repo_name)
+
+        try:
+            existing_file = gh_repo.get_contents(path, ref=branch)
+            if isinstance(existing_file, list):
+                from github_mcp.utils import GitHubAPIError
+
+                raise GitHubAPIError(f"Path '{path}' is a directory, not a file.")
+            result = gh_repo.update_file(
+                path=path,
+                message=message,
+                content=content,
+                sha=existing_file.sha,
+                branch=branch,
+            )
+            action = "updated"
+        except Exception:
+            result = gh_repo.create_file(
+                path=path,
+                message=message,
+                content=content,
+                branch=branch,
+            )
+            action = "created"
+
+        commit_obj: Any = result.get("commit")
+        commit_sha = commit_obj.sha if commit_obj and hasattr(commit_obj, "sha") else "unknown"
+
+        return {
+            "status": "success",
+            "repo": full_repo_name,
+            "path": path,
+            "action": action,
+            "branch": branch,
+            "commit_sha": commit_sha[:7] if isinstance(commit_sha, str) else "unknown",
+            "message": (
+                f"Successfully {action} file '{path}' on branch '{branch}' in {full_repo_name}."
+            ),
+        }
+
+    return await run_async_github_call(_sync_commit_file)
+
+
+async def create_issue(
+    repo: str,
+    title: str,
+    body: str = "",
+    labels: list[str] | None = None,
+    assignees: list[str] | None = None,
+    github_client: Github | None = None,
+) -> dict[str, Any]:
+    """Create a new issue in a repository.
+
+    Args:
+        repo: Repository name in 'owner/repo' format (or just repository name).
+        title: Title of the issue.
+        body: Body/description of the issue.
+        labels: Optional list of label names to apply.
+        assignees: Optional list of GitHub usernames to assign.
+        github_client: Optional pre-configured PyGithub instance.
+    """
+    client = github_client or get_github_client()
+
+    def _sync_create_issue() -> dict[str, Any]:
+        full_repo_name = repo
+        if "/" not in full_repo_name:
+            user = client.get_user()
+            full_repo_name = f"{user.login}/{repo}"
+
+        gh_repo = client.get_repo(full_repo_name)
+        kwargs: dict[str, Any] = {"title": title, "body": body}
+        if labels:
+            kwargs["labels"] = labels
+        if assignees:
+            kwargs["assignees"] = assignees
+
+        issue = gh_repo.create_issue(**kwargs)
+
+        return {
+            "status": "success",
+            "number": issue.number,
+            "title": issue.title,
+            "url": issue.html_url,
+            "state": issue.state,
+            "labels": [label.name for label in issue.labels],
+            "assignees": [a.login for a in issue.assignees],
+            "message": (
+                f"Successfully created issue #{issue.number}: '{issue.title}' in {full_repo_name}."
+            ),
+        }
+
+    return await run_async_github_call(_sync_create_issue)

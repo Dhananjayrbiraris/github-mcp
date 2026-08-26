@@ -183,3 +183,105 @@ async def test_update_repo_visibility(mock_github: MagicMock) -> None:
     assert res["status"] == "success"
     assert res["private"] is True
     assert res["repo"] == "user/repo"
+
+
+@pytest.mark.asyncio
+async def test_create_pull_request(mock_github: MagicMock) -> None:
+    from github_mcp.github_tools import create_pull_request
+
+    mock_repo = MagicMock()
+    mock_pr = MagicMock()
+    mock_pr.number = 12
+    mock_pr.title = "Add new feature"
+    mock_pr.html_url = "https://github.com/user/repo/pull/12"
+    mock_pr.draft = False
+    mock_pr.state = "open"
+
+    mock_repo.create_pull.return_value = mock_pr
+    mock_github.get_repo.return_value = mock_repo
+
+    res = await create_pull_request(
+        "user/repo",
+        title="Add new feature",
+        head="feature-1",
+        base="main",
+        github_client=mock_github,
+    )
+    assert res["status"] == "success"
+    assert res["number"] == 12
+    assert res["head"] == "feature-1"
+
+
+@pytest.mark.asyncio
+async def test_create_branch(mock_github: MagicMock) -> None:
+    from github_mcp.github_tools import create_branch
+
+    mock_repo = MagicMock()
+    mock_branch = MagicMock()
+    mock_branch.commit.sha = "1234567890abcdef"
+    mock_ref = MagicMock()
+    mock_ref.object.sha = "1234567890abcdef"
+
+    mock_repo.get_branch.return_value = mock_branch
+    mock_repo.create_git_ref.return_value = mock_ref
+    mock_github.get_repo.return_value = mock_repo
+
+    res = await create_branch("user/repo", branch="feat-test", github_client=mock_github)
+    assert res["status"] == "success"
+    assert res["branch"] == "feat-test"
+
+
+@pytest.mark.asyncio
+async def test_create_or_update_file(mock_github: MagicMock) -> None:
+    from github_mcp.github_tools import create_or_update_file
+
+    mock_repo = MagicMock()
+    mock_commit = MagicMock()
+    mock_commit.sha = "abcdef123456"
+    mock_repo.get_contents.side_effect = Exception("Not found")
+    mock_repo.create_file.return_value = {"commit": mock_commit}
+    mock_github.get_repo.return_value = mock_repo
+
+    res = await create_or_update_file(
+        "user/repo",
+        path="README.md",
+        content="# Hello",
+        message="init",
+        github_client=mock_github,
+    )
+    assert res["status"] == "success"
+    assert res["action"] == "created"
+
+
+@pytest.mark.asyncio
+async def test_create_issue(mock_github: MagicMock) -> None:
+    from github_mcp.github_tools import create_issue
+
+    mock_repo = MagicMock()
+    mock_issue = MagicMock()
+    mock_issue.number = 5
+    mock_issue.title = "Bug report"
+    mock_issue.html_url = "https://github.com/user/repo/issues/5"
+    mock_issue.state = "open"
+    mock_label = MagicMock()
+    mock_label.name = "bug"
+    mock_issue.labels = [mock_label]
+    mock_assignee = MagicMock()
+    mock_assignee.login = "octocat"
+    mock_issue.assignees = [mock_assignee]
+
+    mock_repo.create_issue.return_value = mock_issue
+    mock_github.get_repo.return_value = mock_repo
+
+    res = await create_issue(
+        "user/repo",
+        title="Bug report",
+        body="Found a bug",
+        labels=["bug"],
+        assignees=["octocat"],
+        github_client=mock_github,
+    )
+    assert res["status"] == "success"
+    assert res["number"] == 5
+    assert "bug" in res["labels"]
+    assert "octocat" in res["assignees"]

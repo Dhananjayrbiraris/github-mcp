@@ -51,7 +51,50 @@ Fetch recent commits for a repository branch within a lookback period.
 - **Output Schema**:
   - Array of objects containing `sha`, `short_sha`, `author`, `message`, `timestamp`, `files_changed_count`, `additions`, `deletions`.
 
-### 6. `update_repo_visibility`
+### 6. `create_pull_request`
+Create a new pull request in a GitHub repository.
+- **Inputs**:
+  - `repo` (str): Repository in `'owner/repo'` format.
+  - `title` (str): Pull request title.
+  - `head` (str): Branch containing changes.
+  - `base` (str, default: `'main'`): Target branch to merge into.
+  - `body` (str, optional): Description of the PR.
+  - `draft` (bool, default: False): Whether to create as draft.
+- **Output Schema**:
+  - Object containing `status`, `number`, `title`, `url`, `head`, `base`, `draft`, `state`, `message`.
+
+### 7. `create_branch`
+Create a new git branch in a GitHub repository off of an existing branch.
+- **Inputs**:
+  - `repo` (str): Repository in `'owner/repo'` format.
+  - `branch` (str): Name of the new branch.
+  - `from_branch` (str, default: `'main'`): Base branch name.
+- **Output Schema**:
+  - Object containing `status`, `repo`, `branch`, `from_branch`, `sha`, `message`.
+
+### 8. `create_or_update_file`
+Create or update and commit a file directly on a GitHub branch.
+- **Inputs**:
+  - `repo` (str): Repository in `'owner/repo'` format.
+  - `path` (str): Target file path in the repository.
+  - `content` (str): File text content.
+  - `message` (str): Git commit message.
+  - `branch` (str, default: `'main'`): Target branch.
+- **Output Schema**:
+  - Object containing `status`, `repo`, `path`, `action`, `branch`, `commit_sha`, `message`.
+
+### 9. `create_issue`
+Create a new issue in a GitHub repository.
+- **Inputs**:
+  - `repo` (str): Repository in `'owner/repo'` format.
+  - `title` (str): Issue title.
+  - `body` (str, optional): Issue description.
+  - `labels` (list[str], optional): List of label names.
+  - `assignees` (list[str], optional): List of usernames to assign.
+- **Output Schema**:
+  - Object containing `status`, `number`, `title`, `url`, `state`, `labels`, `assignees`, `message`.
+
+### 10. `update_repo_visibility`
 Update the privacy/visibility settings of a repository to make it private or public.
 - **Inputs**:
   - `repo` (str): Repository name in `'owner/repo'` format (or repository name).

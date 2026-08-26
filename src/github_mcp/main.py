@@ -20,6 +20,10 @@ from github_mcp.file_tools import (
     search_local_files,
 )
 from github_mcp.github_tools import (
+    create_branch,
+    create_issue,
+    create_or_update_file,
+    create_pull_request,
     inspect_issue,
     inspect_pr,
     recent_commits,
@@ -114,6 +118,69 @@ async def tool_recent_commits(
 )
 async def tool_update_repo_visibility(repo: str, private: bool) -> dict[str, Any]:
     return await update_repo_visibility(repo=repo, private=private)
+
+
+@app.tool(
+    name="create_pull_request",
+    description=(
+        "Create a new pull request from head branch into base branch in a GitHub repository."
+    ),
+)
+async def tool_create_pull_request(
+    repo: str,
+    title: str,
+    head: str,
+    base: str = "main",
+    body: str = "",
+    draft: bool = False,
+) -> dict[str, Any]:
+    return await create_pull_request(
+        repo=repo, title=title, head=head, base=base, body=body, draft=draft
+    )
+
+
+@app.tool(
+    name="create_branch",
+    description="Create a new git branch in a repository off of an existing branch.",
+)
+async def tool_create_branch(
+    repo: str,
+    branch: str,
+    from_branch: str = "main",
+) -> dict[str, Any]:
+    return await create_branch(repo=repo, branch=branch, from_branch=from_branch)
+
+
+@app.tool(
+    name="create_or_update_file",
+    description=("Create or update a file directly in a GitHub repository and commit changes."),
+)
+async def tool_create_or_update_file(
+    repo: str,
+    path: str,
+    content: str,
+    message: str,
+    branch: str = "main",
+) -> dict[str, Any]:
+    return await create_or_update_file(
+        repo=repo, path=path, content=content, message=message, branch=branch
+    )
+
+
+@app.tool(
+    name="create_issue",
+    description=(
+        "Create a new issue with title, body, optional labels, and assignees in a repository."
+    ),
+)
+async def tool_create_issue(
+    repo: str,
+    title: str,
+    body: str = "",
+    labels: list[str] | None = None,
+    assignees: list[str] | None = None,
+) -> dict[str, Any]:
+    return await create_issue(repo=repo, title=title, body=body, labels=labels, assignees=assignees)
 
 
 # B. CI/CD Monitoring Tools
